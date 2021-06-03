@@ -1,0 +1,58 @@
+version: '3'
+networks:
+   banco:
+   web:
+   fila:
+services:
+   db:
+      build: firebird/build
+      ports: 
+         - 3052:3050
+      volumes:
+         - ./firebird:/firebird
+      networks:
+         - banco
+   frontend:
+      image: nginx:1.21.0
+      volumes:
+         - ./web:/usr/share/nginx/html
+         - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      ports:
+         - 8080:80
+      networks:
+         - web
+      depends_on:
+         - app
+   app:
+      image: mcr.microsoft.com/dotnet/aspnet:5.0
+      volumes:
+         # the APP application needs to be builded first. Execute "dotnet build" in app folder.
+         - ./app/bin/Debug/net5.0:/app
+      working_dir: /app
+      command: dotnet app.dll
+      networks:
+         - banco
+         - web
+         - fila
+      depends_on:
+         - db 
+         - queue
+      environment:
+         - DB_NAME=/firebird/data/abc_sender.fdb
+   queue:  
+      image: redis:6.2.4
+      networks:
+         - fila
+   worker:
+      build: worker
+      volumes:
+         # the WORKER application needs to be builded first. Execute "dotnet build" in app folder.
+         - ./worker/bin/Debug/net5.0:/app
+      working_dir: /app
+      command: worker.dll
+      networks:
+          - fila
+      depends_on:
+          - queue
+
+  
