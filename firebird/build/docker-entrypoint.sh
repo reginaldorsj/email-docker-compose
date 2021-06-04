@@ -102,7 +102,8 @@ if [ ! -f "${VOLUME}/system/security2.fdb" ]; then
 
     file_env 'ISC_PASSWORD'
     if [ -z ${ISC_PASSWORD} ]; then
-       ISC_PASSWORD=$(createNewPassword)
+       # ISC_PASSWORD=$(createNewPassword)
+       ISC_PASSWORD=masterkey
        echo "setting 'SYSDBA' password to '${ISC_PASSWORD}'"
     fi
     fbtry
@@ -142,7 +143,8 @@ if [ ! -z "${FIREBIRD_DATABASE}" -a ! -f "${DBPATH}/${FIREBIRD_DATABASE}" ]; the
     if [ "${FIREBIRD_USER}" ];  then
         build isql "CONNECT employee USER '${ISC_USER}' PASSWORD '${ISC_PASSWORD}';"
         if [ -z "${FIREBIRD_PASSWORD}" ]; then
-            FIREBIRD_PASSWORD=$(createNewPassword)
+            # FIREBIRD_PASSWORD=$(createNewPassword)
+            FIREBIRD_PASSWORD=masterkey
             echo "setting '${FIREBIRD_USER}' password to '${FIREBIRD_PASSWORD}'"
         fi
         build isql "CREATE USER ${FIREBIRD_USER} PASSWORD '${FIREBIRD_PASSWORD}';"
