@@ -1,3 +1,6 @@
+# my suggest is to pull the images firstly and individually
+# another situation is to build the Firebird database firstly and individually, too.
+
 version: '3'
 networks:
    banco:
