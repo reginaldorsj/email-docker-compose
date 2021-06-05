@@ -8,7 +8,7 @@ networks:
    fila:
 services:
    db:
-      build: firebird/build
+      image: reginaldojr/firebird:2.5.9
       ports: 
          - 3052:3050
       volumes:
